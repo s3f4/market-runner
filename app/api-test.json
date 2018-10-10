@@ -1,0 +1,10 @@
+{
+  "bittrex": {
+    "apiKey": "",
+    "apiSecret": ""
+  },
+  "binance": {
+    "apiKey": "",
+    "apiSecret": ""
+  }
+}

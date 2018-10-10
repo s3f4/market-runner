@@ -1,0 +1,52 @@
+version: '3'
+
+services:
+  app:
+    restart: always
+    build: ./app
+    working_dir: /usr/src/app
+    volumes:
+      - ./app:/usr/src/app
+    command: /usr/local/bin/gunicorn -w 2 -b :8000 market_runner:app
+    networks:
+      - db_nw
+      - web_nw
+    depends_on:
+      - mysql
+    ports:
+      - "8000:8000"
+    hostname: gunicorn.local
+    container_name: gunicorn
+
+  mysql:
+    restart: always
+    build:
+      context: ./mysql
+    ports:
+      - "33066:3306"
+    networks:
+      - db_nw
+    hostname: mysql.local
+    container_name: mysql
+    environment:
+       MYSQL_ROOT_PASSWORD: 123456
+       MYSQL_DATABASE:
+       MYSQL_USER: root
+       MYSQL_PASSWORD: 123456
+
+  nginx:
+    restart: always
+    build: ./nginx
+    ports:
+      - "8080:80"
+    networks:
+      - web_nw
+    hostname: nginx.local
+    container_name: nginx
+    links:
+      - app
+networks:
+  db_nw:
+    driver: bridge
+  web_nw:
+    driver: bridge
